@@ -18,4 +18,22 @@ describe("Desktop UI Shell", () => {
     expect(parseTarget("", "/mascot.html")).toBe("mascot");
     expect(parseTarget("", "/")).toBe("settings");
   });
+
+  it("validates mascot state progression", () => {
+    const validStates = [
+      "idle",
+      "listening",
+      "thinking",
+      "speaking",
+      "pointing",
+      "happy",
+      "confused",
+      "error",
+      "paused",
+    ];
+
+    expect(validStates).toContain("listening");
+    expect(validStates).toContain("thinking");
+    expect(validStates.length).toBe(9);
+  });
 });

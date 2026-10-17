@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { listen } from "@tauri-apps/api/event";
 
 export type MascotState =
   | "idle"
@@ -20,8 +21,40 @@ export const MascotWindow: React.FC<MascotWindowProps> = ({
   initialState = "idle",
   initialMicLevel = 0.4,
 }) => {
-  const [state] = useState<MascotState>(initialState);
-  const [micLevel] = useState<number>(initialMicLevel);
+  const [state, setState] = useState<MascotState>(initialState);
+  const [micLevel, setMicLevel] = useState<number>(initialMicLevel);
+
+  useEffect(() => {
+    let unlistenDown: (() => void) | undefined;
+    let unlistenUp: (() => void) | undefined;
+    let unlistenEnergy: (() => void) | undefined;
+
+    const setupListeners = async () => {
+      try {
+        unlistenDown = await listen("hotkey_down", () => {
+          setState("listening");
+        });
+
+        unlistenUp = await listen("hotkey_up", () => {
+          setState("thinking");
+        });
+
+        unlistenEnergy = await listen<number>("mic_energy", (event) => {
+          setMicLevel(event.payload);
+        });
+      } catch {
+        // Running outside Tauri webview environment (e.g. dev browser)
+      }
+    };
+
+    setupListeners();
+
+    return () => {
+      unlistenDown?.();
+      unlistenUp?.();
+      unlistenEnergy?.();
+    };
+  }, []);
 
   return (
     <div className="w-[160px] h-[160px] flex items-center justify-center relative bg-transparent select-none pointer-events-none">
