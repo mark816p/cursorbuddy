@@ -3,6 +3,7 @@
 
 pub mod audio;
 pub mod coords;
+pub mod dictate;
 pub mod hotkey;
 pub mod mascot;
 pub mod overlay;
@@ -18,6 +19,8 @@ use tauri::{Emitter, Manager};
 static IS_PAUSED: Lazy<Arc<AtomicBool>> = Lazy::new(|| Arc::new(AtomicBool::new(false)));
 static AUDIO_RECORDER: Lazy<Arc<Mutex<audio::capture::AudioRecorder>>> =
     Lazy::new(|| Arc::new(Mutex::new(audio::capture::AudioRecorder::new())));
+static AUDIO_PLAYER: Lazy<Arc<Mutex<audio::playback::AudioPlayer>>> =
+    Lazy::new(|| Arc::new(Mutex::new(audio::playback::AudioPlayer::new())));
 
 #[tauri::command]
 fn get_companion_status() -> Result<serde_json::Value, String> {
@@ -57,6 +60,25 @@ fn capture_screen(custom_blocklist: Vec<String>, debug_mode: bool) -> Result<scr
     screen::capture::capture_cursor_display(&filter, debug_mode).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn play_tts_stream(app: tauri::AppHandle, audio_bytes: Vec<u8>) -> Result<(), String> {
+    let mut player = AUDIO_PLAYER.lock();
+    let app_handle = app.clone();
+
+    player
+        .play_bytes(audio_bytes, move |amplitude| {
+            let _ = app_handle.emit("tts_amplitude", amplitude);
+        })
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn stop_tts_playback() -> Result<(), String> {
+    let mut player = AUDIO_PLAYER.lock();
+    player.stop();
+    Ok(())
+}
+
 fn main() {
     tracing_subscriber::fmt::init();
 
@@ -73,6 +95,9 @@ fn main() {
             start_mic_capture,
             stop_mic_capture,
             capture_screen,
+            play_tts_stream,
+            stop_tts_playback,
+            dictate::paste_dictated_text,
             overlay::show_overlay,
             overlay::hide_overlay,
             overlay::render_annotations,

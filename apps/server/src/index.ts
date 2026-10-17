@@ -5,6 +5,8 @@ import { logger } from "hono/logger";
 import dotenv from "dotenv";
 
 import { askRoute } from "./routes/ask.js";
+import { ttsRoute } from "./routes/tts.js";
+import { dictateRoute } from "./routes/dictate.js";
 
 dotenv.config();
 
@@ -36,6 +38,8 @@ app.get("/health", (c) => {
 });
 
 app.route("/ask", askRoute);
+app.route("/tts", ttsRoute);
+app.route("/dictate", dictateRoute);
 
 const port = Number(process.env.PORT) || 3001;
 

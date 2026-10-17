@@ -79,4 +79,21 @@ describe("Desktop UI Shell", () => {
     expect(remapped.w).toBe(100);
     expect(remapped.h).toBe(50);
   });
+
+  it("validates dictation response payload schema", async () => {
+    const { DictateResponseSchema } = await import("@cursorbuddy/shared");
+
+    const validPayload = {
+      text: "The quick brown fox jumps over the lazy dog.",
+      language: "en",
+      duration_seconds: 2.4,
+    };
+
+    const parsed = DictateResponseSchema.safeParse(validPayload);
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.text).toContain("quick brown fox");
+      expect(parsed.data.language).toBe("en");
+    }
+  });
 });
