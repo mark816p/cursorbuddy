@@ -6,6 +6,7 @@ pub mod audio;
 pub mod coords;
 pub mod dictate;
 pub mod hotkey;
+pub mod jobs;
 pub mod mascot;
 pub mod overlay;
 pub mod screen;
@@ -100,6 +101,10 @@ fn main() {
             stop_tts_playback,
             dictate::paste_dictated_text,
             accessibility::get_ui_elements,
+            jobs::record_file_action,
+            jobs::undo_last_file_action,
+            jobs::get_journal_history,
+            jobs::notify_task_completed,
             overlay::show_overlay,
             overlay::hide_overlay,
             overlay::render_annotations,

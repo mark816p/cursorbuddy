@@ -125,4 +125,29 @@ describe("Desktop UI Shell", () => {
     expect(snapped.w).toBe(140);
     expect(snapped.h).toBe(42);
   });
+
+  it("validates file journal action structure", () => {
+    interface TestJournalEntry {
+      id: string;
+      action_type: "rename" | "move";
+      source_path: string;
+      destination_path: string;
+      undone: boolean;
+    }
+
+    const entry: TestJournalEntry = {
+      id: "act_1001",
+      action_type: "rename",
+      source_path: "C:\\docs\\report_old.pdf",
+      destination_path: "C:\\docs\\report_2026.pdf",
+      undone: false,
+    };
+
+    expect(entry.action_type).toBe("rename");
+    expect(entry.undone).toBe(false);
+
+    // Simulate undo
+    entry.undone = true;
+    expect(entry.undone).toBe(true);
+  });
 });

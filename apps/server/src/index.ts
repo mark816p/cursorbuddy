@@ -10,6 +10,7 @@ import { dictateRoute } from "./routes/dictate.js";
 import { billingRoute } from "./routes/billing.js";
 import { webhooksRoute } from "./routes/webhooks.js";
 import { invitesRoute } from "./routes/invites.js";
+import { jobsRoute } from "./routes/jobs.js";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.route("/dictate", dictateRoute);
 app.route("/billing", billingRoute);
 app.route("/webhooks", webhooksRoute);
 app.route("/invites", invitesRoute);
+app.route("/jobs", jobsRoute);
 
 const port = Number(process.env.PORT) || 3001;
 
