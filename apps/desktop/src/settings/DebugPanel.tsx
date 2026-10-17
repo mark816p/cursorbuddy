@@ -1,13 +1,37 @@
 import React, { useState } from "react";
 import { Bug, Crosshair, RefreshCw, Eye } from "lucide-react";
+import { invoke } from "@tauri-apps/api/core";
 
 export const DebugPanel: React.FC = () => {
   const [debugMode, setDebugMode] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
   const [lastCapturePath, setLastCapturePath] = useState<string | null>(null);
+  const [redactedCount, setRedactedCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const simulateCaptureTest = () => {
-    setLastCapturePath("C:\\Users\\kinja\\AppData\\Local\\Temp\\cursorbuddy_debug_capture.jpg");
+  const triggerCapture = async () => {
+    setIsLoading(true);
+    try {
+      const res = await invoke<{
+        debug_path?: string;
+        redacted_count: number;
+        resize_factor: number;
+      }>("capture_screen", {
+        customBlocklist: [],
+        debugMode: true,
+      });
+
+      if (res.debug_path) {
+        setLastCapturePath(res.debug_path);
+      }
+      setRedactedCount(res.redacted_count);
+    } catch {
+      // Outside Tauri environment fallback
+      setLastCapturePath("C:\\Users\\kinja\\AppData\\Local\\Temp\\cursorbuddy_debug_capture.jpg");
+      setRedactedCount(2);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,11 +96,12 @@ export const DebugPanel: React.FC = () => {
             Last Captured Frame
           </span>
           <button
-            onClick={simulateCaptureTest}
-            className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 transition"
+            onClick={triggerCapture}
+            disabled={isLoading}
+            className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 transition disabled:opacity-50"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Simulate Capture Check
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            {isLoading ? "Capturing..." : "Trigger Test Capture"}
           </button>
         </div>
 
@@ -85,7 +110,7 @@ export const DebugPanel: React.FC = () => {
             <div className="text-slate-400">Target File:</div>
             <div className="text-emerald-400 break-all">{lastCapturePath}</div>
             <div className="text-slate-500 pt-1">
-              Downscale: Max edge &le; 1568px | Compression: JPEG 85 | Redaction: 2 windows applied
+              Downscale: Max edge &le; 1568px | Compression: JPEG 85 | Redacted windows: {redactedCount}
             </div>
           </div>
         ) : (

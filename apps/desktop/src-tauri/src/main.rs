@@ -5,6 +5,7 @@ pub mod audio;
 pub mod coords;
 pub mod hotkey;
 pub mod mascot;
+pub mod screen;
 pub mod tray;
 
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -49,6 +50,12 @@ fn stop_mic_capture() -> Result<Vec<u8>, String> {
     recorder.stop().map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn capture_screen(custom_blocklist: Vec<String>, debug_mode: bool) -> Result<screen::capture::CaptureResult, String> {
+    let filter = screen::redact::RedactionFilter::new(custom_blocklist);
+    screen::capture::capture_cursor_display(&filter, debug_mode).map_err(|e| e.to_string())
+}
+
 fn main() {
     tracing_subscriber::fmt::init();
 
@@ -64,6 +71,7 @@ fn main() {
             toggle_pause,
             start_mic_capture,
             stop_mic_capture,
+            capture_screen,
         ])
         .setup(|app| {
             // Initialize system tray
@@ -86,7 +94,7 @@ fn main() {
                 }
             });
 
-            tracing::info!("Cursorbuddy Tauri 2 core and hotkeys initialized successfully");
+            tracing::info!("Cursorbuddy Tauri 2 core and screen capture initialized successfully");
             Ok(())
         })
         .run(tauri::generate_context!())
