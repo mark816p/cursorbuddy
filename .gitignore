@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Rust build artifacts
+target/
+Cargo.lock
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# Desktop & Web build outputs
+dist/
+build/
+apps/desktop/dist/
+apps/server/dist/
+apps/desktop/src-tauri/target/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.exe
+*.msi
+*.dmg
+
+# Debug captures & local logs
+cursorbuddy_debug_capture.jpg
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.turbo/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

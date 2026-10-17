@@ -1,0 +1,23 @@
+{
+  "name": "cursorbuddy-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.9.1",
+  "scripts": {
+    "build": "pnpm -r --filter=!cursorbuddy-desktop build",
+    "dev:server": "pnpm --filter @cursorbuddy/server dev",
+    "dev:desktop": "pnpm --filter @cursorbuddy/desktop dev",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "eslint": "^9.16.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
