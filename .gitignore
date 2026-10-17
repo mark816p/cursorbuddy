@@ -17,6 +17,7 @@ Cargo.lock
 # Desktop & Web build outputs
 dist/
 build/
+*.tsbuildinfo
 apps/desktop/dist/
 apps/server/dist/
 apps/desktop/src-tauri/target/

@@ -4,6 +4,8 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import dotenv from "dotenv";
 
+import { askRoute } from "./routes/ask.js";
+
 dotenv.config();
 
 const app = new Hono();
@@ -32,6 +34,8 @@ app.get("/health", (c) => {
     env: process.env.NODE_ENV || "development",
   });
 });
+
+app.route("/ask", askRoute);
 
 const port = Number(process.env.PORT) || 3001;
 
