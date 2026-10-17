@@ -1,4 +1,5 @@
 import { AnnotationItem } from "./schemas/annotations.js";
+import { UiElementItem } from "./schemas/ask.js";
 
 /**
  * Display geometry used for coordinate conversions.
@@ -155,5 +156,30 @@ export function remapRelativeToWindow(
     y: newWindowY + rel.relY,
     w: rel.w,
     h: rel.h,
+  };
+}
+
+/**
+ * Snap an annotation's geometry to an accessibility-tree UI element if matching element_id exists.
+ */
+export function snapAnnotationToUiElement(
+  ann: ConvertedAnnotation,
+  elements?: UiElementItem[]
+): ConvertedAnnotation {
+  if (!ann.element_id || !elements || elements.length === 0) {
+    return ann;
+  }
+
+  const matched = elements.find((el) => el.id === ann.element_id);
+  if (!matched) {
+    return ann;
+  }
+
+  return {
+    ...ann,
+    x: matched.bounds.x,
+    y: matched.bounds.y,
+    w: matched.bounds.w,
+    h: matched.bounds.h,
   };
 }

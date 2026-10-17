@@ -96,4 +96,33 @@ describe("Desktop UI Shell", () => {
       expect(parsed.data.language).toBe("en");
     }
   });
+
+  it("snaps annotations to accessibility UI element bounds", async () => {
+    const { snapAnnotationToUiElement } = await import("@cursorbuddy/shared");
+
+    const elements = [
+      {
+        id: "btn_install",
+        role: "Button",
+        name: "Install Extension",
+        bounds: { x: 320, y: 180, w: 140, h: 42 },
+      },
+    ];
+
+    const annotation = {
+      step: 1,
+      type: "highlight" as const,
+      x: 310,
+      y: 175,
+      w: 160,
+      h: 50,
+      element_id: "btn_install",
+    };
+
+    const snapped = snapAnnotationToUiElement(annotation, elements);
+    expect(snapped.x).toBe(320);
+    expect(snapped.y).toBe(180);
+    expect(snapped.w).toBe(140);
+    expect(snapped.h).toBe(42);
+  });
 });

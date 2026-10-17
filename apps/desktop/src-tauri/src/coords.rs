@@ -5,6 +5,14 @@
 
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RectBounds {
+    pub x: i32,
+    pub y: i32,
+    pub w: u32,
+    pub h: u32,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DisplayGeometry {
     pub scale_factor: f64,

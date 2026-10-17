@@ -8,6 +8,7 @@ import {
   convertAnnotationToCss,
   computeWindowRelativeOffset,
   remapRelativeToWindow,
+  snapAnnotationToUiElement,
 } from "./coordinates.js";
 import { AnnotationItem } from "./schemas/annotations.js";
 
@@ -162,5 +163,32 @@ describe("Coordinate Conversion Engine - Test Matrix", () => {
     expect(remapped.y).toBe(380);
     expect(remapped.w).toBe(50);
     expect(remapped.h).toBe(50);
+  });
+
+  it("Scenario 9: UI Accessibility element snapping", () => {
+    const elements = [
+      {
+        id: "btn_save",
+        role: "Button",
+        name: "Save Document",
+        bounds: { x: 200, y: 120, w: 90, h: 36 },
+      },
+    ];
+
+    const annotation = {
+      step: 1,
+      type: "circle" as const,
+      x: 195,
+      y: 118,
+      w: 100,
+      h: 40,
+      element_id: "btn_save",
+    };
+
+    const snapped = snapAnnotationToUiElement(annotation, elements);
+    expect(snapped.x).toBe(200);
+    expect(snapped.y).toBe(120);
+    expect(snapped.w).toBe(90);
+    expect(snapped.h).toBe(36);
   });
 });

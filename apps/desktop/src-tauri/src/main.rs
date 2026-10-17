@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+pub mod accessibility;
 pub mod audio;
 pub mod coords;
 pub mod dictate;
@@ -98,6 +99,7 @@ fn main() {
             play_tts_stream,
             stop_tts_playback,
             dictate::paste_dictated_text,
+            accessibility::get_ui_elements,
             overlay::show_overlay,
             overlay::hide_overlay,
             overlay::render_annotations,

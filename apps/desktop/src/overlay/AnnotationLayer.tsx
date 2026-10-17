@@ -1,16 +1,18 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ConvertedAnnotation } from "@cursorbuddy/shared";
+import { ConvertedAnnotation, UiElementItem, snapAnnotationToUiElement } from "@cursorbuddy/shared";
 
 export interface AnnotationLayerProps {
   annotations: ConvertedAnnotation[];
+  elements?: UiElementItem[];
 }
 
-export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations }) => {
+export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, elements }) => {
   return (
     <AnimatePresence>
       <g className="annotation-layer">
-        {annotations.map((ann, idx) => {
+        {annotations.map((rawAnn, idx) => {
+          const ann = snapAnnotationToUiElement(rawAnn, elements);
           const key = `ann-${ann.step}-${ann.type}-${idx}`;
 
           if (ann.type === "circle") {
