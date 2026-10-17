@@ -5,6 +5,7 @@ pub mod audio;
 pub mod coords;
 pub mod hotkey;
 pub mod mascot;
+pub mod overlay;
 pub mod screen;
 pub mod tray;
 
@@ -72,6 +73,10 @@ fn main() {
             start_mic_capture,
             stop_mic_capture,
             capture_screen,
+            overlay::show_overlay,
+            overlay::hide_overlay,
+            overlay::render_annotations,
+            overlay::toggle_calibration_grid,
         ])
         .setup(|app| {
             // Initialize system tray

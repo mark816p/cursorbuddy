@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ConvertedAnnotation } from "@cursorbuddy/shared";
+import { AnnotationLayer } from "./AnnotationLayer.js";
+import { DebugGrid } from "./DebugGrid.js";
 
 export interface OverlayWindowProps {
   initialAnnotations?: ConvertedAnnotation[];
@@ -11,17 +13,68 @@ export const OverlayWindow: React.FC<OverlayWindowProps> = ({
   calibrationGrid = false,
 }) => {
   const [annotations, setAnnotations] = useState<ConvertedAnnotation[]>(initialAnnotations);
-  const [showCalibrationGrid] = useState(calibrationGrid);
+  const [showCalibrationGrid, setShowCalibrationGrid] = useState(calibrationGrid);
+  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const resetDismissTimer = () => {
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+    }
+    // 30-second auto-fade
+    dismissTimerRef.current = setTimeout(() => {
+      setAnnotations([]);
+    }, 30000);
+  };
 
   useEffect(() => {
-    // Escape key listener to dismiss annotations immediately
+    // 1. Keyboard dismiss on Escape
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setAnnotations([]);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    // 2. Setup Tauri event listeners if running inside Tauri
+    let unlistenRender: (() => void) | undefined;
+    let unlistenClear: (() => void) | undefined;
+    let unlistenGrid: (() => void) | undefined;
+
+    const setupTauriListeners = async () => {
+      try {
+        const { listen } = await import("@tauri-apps/api/event");
+
+        unlistenRender = await listen<ConvertedAnnotation[]>("render_annotations", (event) => {
+          setAnnotations(event.payload);
+          resetDismissTimer();
+        });
+
+        unlistenClear = await listen("clear_annotations", () => {
+          setAnnotations([]);
+          if (dismissTimerRef.current) {
+            clearTimeout(dismissTimerRef.current);
+          }
+        });
+
+        unlistenGrid = await listen<boolean>("toggle_calibration_grid", (event) => {
+          setShowCalibrationGrid(event.payload);
+        });
+      } catch {
+        // Fallback for standalone browser preview / testing
+      }
+    };
+
+    setupTauriListeners();
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+      }
+      if (unlistenRender) unlistenRender();
+      if (unlistenClear) unlistenClear();
+      if (unlistenGrid) unlistenGrid();
+    };
   }, []);
 
   return (
@@ -31,17 +84,18 @@ export const OverlayWindow: React.FC<OverlayWindowProps> = ({
           {/* Arrowhead marker definition */}
           <marker
             id="arrowhead"
-            markerWidth="10"
-            markerHeight="7"
-            refX="9"
-            refY="3.5"
+            markerWidth="12"
+            markerHeight="9"
+            refX="10"
+            refY="4.5"
             orient="auto"
           >
-            <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+            <polygon points="0 0, 12 4.5, 0 9" fill="#3b82f6" />
           </marker>
+
           {/* Glow filter */}
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -50,89 +104,12 @@ export const OverlayWindow: React.FC<OverlayWindowProps> = ({
         </defs>
 
         {/* Optional 100px Calibration Grid */}
-        {showCalibrationGrid && (
-          <g opacity={0.25} stroke="#3b82f6" strokeWidth={1}>
-            {Array.from({ length: 40 }).map((_, i) => (
-              <line key={`v-${i}`} x1={i * 100} y1={0} x2={i * 100} y2={2160} />
-            ))}
-            {Array.from({ length: 25 }).map((_, i) => (
-              <line key={`h-${i}`} x1={0} y1={i * 100} x2={3840} y2={i * 100} />
-            ))}
-          </g>
-        )}
+        <DebugGrid visible={showCalibrationGrid} />
 
-        {/* Render Annotations */}
-        {annotations.map((ann, idx) => {
-          if (ann.type === "circle") {
-            const rx = ann.w / 2;
-            const ry = ann.h / 2;
-            const cx = ann.x + rx;
-            const cy = ann.y + ry;
-            return (
-              <g key={idx} filter="url(#glow)">
-                <ellipse
-                  cx={cx}
-                  cy={cy}
-                  rx={rx}
-                  ry={ry}
-                  fill="none"
-                  stroke="#3b82f6"
-                  strokeWidth="3.5"
-                  strokeDasharray="6 4"
-                  className="animate-pulse"
-                />
-                {/* Step badge */}
-                <circle cx={cx - rx} cy={cy - ry} r="12" fill="#2563eb" />
-                <text
-                  x={cx - rx}
-                  y={cy - ry + 4}
-                  textAnchor="middle"
-                  fill="#ffffff"
-                  fontSize="11"
-                  fontWeight="bold"
-                >
-                  {ann.step}
-                </text>
-              </g>
-            );
-          }
-
-          if (ann.type === "arrow" && ann.from_x !== undefined && ann.to_x !== undefined) {
-            return (
-              <g key={idx} filter="url(#glow)">
-                <line
-                  x1={ann.from_x}
-                  y1={ann.from_y}
-                  x2={ann.to_x}
-                  y2={ann.to_y}
-                  stroke="#3b82f6"
-                  strokeWidth="3.5"
-                  markerEnd="url(#arrowhead)"
-                />
-              </g>
-            );
-          }
-
-          if (ann.type === "highlight") {
-            return (
-              <rect
-                key={idx}
-                x={ann.x}
-                y={ann.y}
-                width={ann.w}
-                height={ann.h}
-                rx="6"
-                fill="rgba(59, 130, 246, 0.15)"
-                stroke="#3b82f6"
-                strokeWidth="2.5"
-                filter="url(#glow)"
-              />
-            );
-          }
-
-          return null;
-        })}
+        {/* Animated Annotation Marks */}
+        <AnnotationLayer annotations={annotations} />
       </svg>
     </div>
   );
 };
+export default OverlayWindow;

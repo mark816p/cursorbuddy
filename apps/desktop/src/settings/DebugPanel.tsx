@@ -77,7 +77,15 @@ export const DebugPanel: React.FC = () => {
             </div>
           </div>
           <button
-            onClick={() => setShowGrid(!showGrid)}
+            onClick={async () => {
+              const nextState = !showGrid;
+              setShowGrid(nextState);
+              try {
+                await invoke("toggle_calibration_grid", { enabled: nextState });
+              } catch {
+                // Standalone test preview fallback
+              }
+            }}
             className={`px-3 py-1.5 rounded text-xs font-medium transition ${
               showGrid
                 ? "bg-blue-600 hover:bg-blue-500 text-white"

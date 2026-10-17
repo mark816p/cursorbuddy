@@ -177,4 +177,35 @@ mod tests {
         assert_eq!(w, 50);
         assert_eq!(h, 50);
     }
+
+    #[test]
+    fn test_scenario_7_rotated_portrait_monitor() {
+        let width = 1080;
+        let height = 1920;
+        let scale_factor = 1.0;
+        let resize_factor = calculate_resize_factor(width, height);
+        let expected_factor = 1568.0 / 1920.0;
+        assert!((resize_factor - expected_factor).abs() < 1e-5);
+
+        let model_y = 800.0 * resize_factor;
+        let css_y = model_to_overlay_css_px(model_y, resize_factor, scale_factor);
+        assert!((css_y - 800.0).abs() < 1.0);
+    }
+
+    #[test]
+    fn test_scenario_8_200_percent_windows_scaling() {
+        let width = 3840;
+        let height = 2160;
+        let scale_factor = 2.0;
+        let resize_factor = calculate_resize_factor(width, height);
+
+        let model_x = 1000.0 * resize_factor;
+        let model_y = 500.0 * resize_factor;
+
+        let css_x = model_to_overlay_css_px(model_x, resize_factor, scale_factor);
+        let css_y = model_to_overlay_css_px(model_y, resize_factor, scale_factor);
+
+        assert!((css_x - 500.0).abs() < 1.0);
+        assert!((css_y - 250.0).abs() < 1.0);
+    }
 }
