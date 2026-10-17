@@ -22,6 +22,16 @@
         "visible": true
       },
       {
+        "title": "Cursorbuddy Setup",
+        "label": "onboarding",
+        "width": 640,
+        "height": 520,
+        "resizable": false,
+        "fullscreen": false,
+        "visible": false,
+        "url": "index.html?window=onboarding"
+      },
+      {
         "title": "Cursorbuddy Mascot",
         "label": "mascot",
         "width": 160,
@@ -62,5 +72,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/cursorbuddy/cursorbuddy/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQxRTI5QTZBQTI1RUQ3ODUKUldTYkRvd3ZtTk4ycGpmVnJ2dWl0OHhrcDlsbkpnRGVvT01wUG51L2l1Z3h1UG5wTk5yQW4reU8K"
+    }
   }
 }

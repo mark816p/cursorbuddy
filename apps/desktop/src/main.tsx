@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { SettingsWindow } from "./settings/SettingsWindow.js";
 import { OverlayWindow } from "./overlay/OverlayWindow.js";
 import { MascotWindow } from "./mascot/MascotWindow.js";
+import { OnboardingWindow } from "./onboarding/OnboardingWindow.js";
 
 function getWindowTarget(): string {
   // Check URL query parameters (useful in development and multi-window webview setups)
@@ -13,6 +14,7 @@ function getWindowTarget(): string {
   // In Tauri 2, window label can also be inspected
   if (window.location.pathname.includes("overlay")) return "overlay";
   if (window.location.pathname.includes("mascot")) return "mascot";
+  if (window.location.pathname.includes("onboarding")) return "onboarding";
 
   return "settings";
 }
@@ -25,6 +27,8 @@ const App: React.FC = () => {
       return <OverlayWindow />;
     case "mascot":
       return <MascotWindow />;
+    case "onboarding":
+      return <OnboardingWindow />;
     case "settings":
     default:
       return <SettingsWindow />;

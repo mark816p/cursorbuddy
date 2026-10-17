@@ -8,14 +8,17 @@ describe("Desktop UI Shell", () => {
       if (target) return target;
       if (pathname.includes("overlay")) return "overlay";
       if (pathname.includes("mascot")) return "mascot";
+      if (pathname.includes("onboarding")) return "onboarding";
       return "settings";
     };
 
     expect(parseTarget("?window=overlay", "/")).toBe("overlay");
     expect(parseTarget("?window=mascot", "/")).toBe("mascot");
     expect(parseTarget("?window=settings", "/")).toBe("settings");
+    expect(parseTarget("?window=onboarding", "/")).toBe("onboarding");
     expect(parseTarget("", "/overlay.html")).toBe("overlay");
     expect(parseTarget("", "/mascot.html")).toBe("mascot");
+    expect(parseTarget("", "/onboarding.html")).toBe("onboarding");
     expect(parseTarget("", "/")).toBe("settings");
   });
 
