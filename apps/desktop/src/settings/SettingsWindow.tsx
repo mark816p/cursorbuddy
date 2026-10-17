@@ -12,6 +12,7 @@ import {
 import { HotkeyConfig } from "./HotkeyConfig.js";
 import { BlocklistConfig } from "./BlocklistConfig.js";
 import { DebugPanel } from "./DebugPanel.js";
+import { AccountTab } from "./AccountTab.js";
 
 type TabId = "general" | "hotkeys" | "privacy" | "account" | "debug";
 
@@ -189,44 +190,7 @@ export const SettingsWindow: React.FC = () => {
           {activeTab === "hotkeys" && <HotkeyConfig />}
           {activeTab === "privacy" && <BlocklistConfig />}
           {activeTab === "debug" && <DebugPanel />}
-
-          {activeTab === "account" && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium text-slate-100 flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-400" />
-                  Account & Quota
-                </h3>
-                <p className="text-sm text-slate-400 mt-1">
-                  Manage your subscription tier and monthly screen question limits.
-                </p>
-              </div>
-
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-xs uppercase tracking-wider font-semibold text-blue-400">
-                      Current Plan
-                    </span>
-                    <div className="text-xl font-bold text-white mt-0.5">Free Tier</div>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs font-semibold shadow-md transition">
-                    Upgrade to Pro (2,000 asks/mo)
-                  </button>
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                  <div className="flex justify-between text-xs text-slate-400">
-                    <span>Monthly Questions Used</span>
-                    <span className="font-mono text-slate-200">12 / 50</span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: "24%" }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {activeTab === "account" && <AccountTab />}
         </div>
       </main>
     </div>

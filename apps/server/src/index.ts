@@ -7,6 +7,9 @@ import dotenv from "dotenv";
 import { askRoute } from "./routes/ask.js";
 import { ttsRoute } from "./routes/tts.js";
 import { dictateRoute } from "./routes/dictate.js";
+import { billingRoute } from "./routes/billing.js";
+import { webhooksRoute } from "./routes/webhooks.js";
+import { invitesRoute } from "./routes/invites.js";
 
 dotenv.config();
 
@@ -40,6 +43,9 @@ app.get("/health", (c) => {
 app.route("/ask", askRoute);
 app.route("/tts", ttsRoute);
 app.route("/dictate", dictateRoute);
+app.route("/billing", billingRoute);
+app.route("/webhooks", webhooksRoute);
+app.route("/invites", invitesRoute);
 
 const port = Number(process.env.PORT) || 3001;
 
