@@ -64,19 +64,26 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "msi", "dmg", "app"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "windows": {
+      "nsis": {
+        "oneClick": true,
+        "perMachine": false,
+        "installerIcon": "icons/icon.ico"
+      }
+    }
   },
   "plugins": {
     "updater": {
       "endpoints": [
-        "https://github.com/cursorbuddy/cursorbuddy/releases/latest/download/latest.json"
+        "https://github.com/mark816p/cursorbuddy/releases/latest/download/latest.json"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQxRTI5QTZBQTI1RUQ3ODUKUldTYkRvd3ZtTk4ycGpmVnJ2dWl0OHhrcDlsbkpnRGVvT01wUG51L2l1Z3h1UG5wTk5yQW4reU8K"
     }

@@ -8,6 +8,7 @@
     "build": "pnpm -r --filter=!cursorbuddy-desktop build",
     "dev:server": "pnpm --filter @cursorbuddy/server dev",
     "dev:desktop": "pnpm --filter @cursorbuddy/desktop dev",
+    "dev:web": "pnpm --filter @cursorbuddy/web dev",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
