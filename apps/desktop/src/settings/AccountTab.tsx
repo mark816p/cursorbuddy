@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { User, Gift, CheckCircle, ExternalLink, Zap } from "lucide-react";
+import { User, Gift, CheckCircle, ExternalLink, Zap, Shield } from "lucide-react";
 
 export const AccountTab: React.FC = () => {
   const [plan] = useState<"free" | "pro">("free");
-  const [questionsUsed] = useState<number>(12);
+  const [questionsUsed] = useState<number>(14);
   const [questionsLimit, setQuestionsLimit] = useState<number>(50);
   const [inviteCode, setInviteCode] = useState<string>("");
   const [inviteSuccessMsg, setInviteSuccessMsg] = useState<string | null>(null);
@@ -22,139 +22,150 @@ export const AccountTab: React.FC = () => {
       const code = inviteCode.trim().toUpperCase();
       if (code === "BUDDY50" || code === "EARLYBIRD" || code.startsWith("PROMO-")) {
         setQuestionsLimit((prev) => prev + 50);
-        setInviteSuccessMsg("Success! 50 bonus questions added to your monthly limit.");
+        setInviteSuccessMsg("Code redeemed successfully! +50 bonus questions added to your account.");
         setInviteCode("");
       } else {
-        setInviteErrorMsg("Invalid or expired invite code. Please check and try again.");
+        setInviteErrorMsg("Invalid or expired invite code. Please verify your code.");
       }
     } catch {
-      setInviteErrorMsg("Failed to connect to account server.");
+      setInviteErrorMsg("Failed to reach verification server. Please retry.");
     } finally {
       setIsRedeeming(false);
     }
   };
 
-  const handleUpgrade = () => {
-    window.open("https://cursorbuddy.ai/pricing", "_blank");
-  };
-
   const percentageUsed = Math.min(100, Math.round((questionsUsed / questionsLimit) * 100));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-200">
       <div>
-        <h3 className="text-lg font-medium text-slate-100 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2.5">
           <User className="w-5 h-5 text-blue-400" />
-          Account & Monthly Quota
-        </h3>
-        <p className="text-sm text-slate-400 mt-1">
-          Manage your subscription plan, monitor usage, and redeem bonus invite codes.
+          Account & Quota Management
+        </h2>
+        <p className="text-xs text-slate-400 mt-1">
+          Monitor your monthly inference usage, upgrade to unlimited priority inference, or redeem promo invite codes.
         </p>
       </div>
 
-      {/* Subscription Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <span className="text-xs uppercase tracking-wider font-semibold text-blue-400">
-              Current Plan
-            </span>
-            <div className="text-xl font-bold text-white mt-0.5 flex items-center gap-2">
-              {plan === "pro" ? "Cursorbuddy Pro" : "Free Tier"}
-              {plan === "pro" && (
-                <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-0.5 rounded font-normal">
-                  Active
-                </span>
-              )}
+      {/* Plan Card */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/40 border border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">
+                {plan === "pro" ? "Pro Plan" : "Free Community Plan"}
+              </span>
+              <span className="text-xs text-slate-400">• Active</span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <h3 className="text-2xl font-extrabold text-white mt-1">
+              {plan === "pro" ? "Cursorbuddy Pro" : "Free Plan Tier"}
+            </h3>
+            <p className="text-xs text-slate-400 max-w-md leading-relaxed">
               {plan === "pro"
-                ? "2,000 asks / month, priority Claude Opus 5.5 inference & high-speed TTS."
-                : "50 asks / month, standard speed, community support."}
+                ? "2,000 asks / month, priority Claude Opus 5.5 inference & high-speed ElevenLabs TTS."
+                : "50 asks / month, standard Claude inference, zero-disk RAM privacy guarantee."}
             </p>
           </div>
 
           {plan === "free" && (
-            <button
-              onClick={handleUpgrade}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs font-semibold shadow-md flex items-center gap-1.5 transition"
+            <a
+              href="https://mark816p.github.io/cursorbuddy/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0"
             >
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              Upgrade to Pro ($19/mo)
-            </button>
+              <Zap className="w-4 h-4 fill-current" />
+              <span>Upgrade to Pro ($19/mo)</span>
+            </a>
           )}
         </div>
 
-        {/* Usage Progress Bar */}
-        <div className="space-y-1.5 pt-3 border-t border-slate-800">
-          <div className="flex justify-between text-xs text-slate-400">
-            <span>Questions Used this Month</span>
-            <span className="font-mono text-slate-200">
-              {questionsUsed} / {questionsLimit} ({percentageUsed}%)
+        {/* Usage Progress Gauge */}
+        <div className="mt-6 pt-5 border-t border-slate-800/80 space-y-2">
+          <div className="flex justify-between items-center text-xs">
+            <span className="font-medium text-slate-300">Monthly Questions Used</span>
+            <span className="font-mono text-slate-200 font-semibold">
+              {questionsUsed} / {questionsLimit} <span className="text-slate-500">({percentageUsed}%)</span>
             </span>
           </div>
-          <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+
+          <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-slate-800">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                percentageUsed > 90 ? "bg-amber-500" : "bg-blue-500"
+                percentageUsed > 85
+                  ? "bg-gradient-to-r from-amber-500 to-rose-500"
+                  : "bg-gradient-to-r from-blue-600 to-teal-400"
               }`}
               style={{ width: `${percentageUsed}%` }}
             />
           </div>
-          <div className="text-[11px] text-slate-500 flex justify-between">
+
+          <div className="flex justify-between items-center text-[11px] text-slate-500">
             <span>Resets on the 1st of each month</span>
-            <span>{questionsLimit - questionsUsed} questions remaining</span>
+            <span className="text-slate-400 font-medium font-mono">
+              {questionsLimit - questionsUsed} questions remaining
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Redeem Invite / Referral Code */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 space-y-3">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-200">
-          <Gift className="w-4 h-4 text-purple-400" />
-          Redeem Invite or Promo Code
+      {/* Redeem Promo / Invite Code */}
+      <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+            <Gift className="w-4 h-4 text-purple-400" />
+            <span>Redeem Referral or Promo Code</span>
+          </div>
+          <span className="text-[11px] text-slate-500">Instant Activation</span>
         </div>
+
         <p className="text-xs text-slate-400">
-          Enter an invite code from a friend or promotional campaign to earn extra free questions.
+          Have an invitation or promotional code? Redeem it here to add bonus asks to your monthly quota.
         </p>
 
-        <form onSubmit={handleRedeemInvite} className="flex gap-2 pt-1">
+        <form onSubmit={handleRedeemInvite} className="flex gap-2">
           <input
             type="text"
-            placeholder="e.g. BUDDY50"
+            placeholder="e.g. BUDDY50 or EARLYBIRD"
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
-            className="flex-1 px-3 py-1.5 bg-slate-800/80 border border-slate-700 rounded-lg text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 uppercase"
+            className="flex-1 px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 uppercase"
           />
           <button
             type="submit"
             disabled={isRedeeming || !inviteCode.trim()}
-            className="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-medium transition disabled:opacity-50"
+            className="px-5 py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white rounded-xl text-xs font-semibold transition shadow-sm"
           >
-            {isRedeeming ? "Redeeming..." : "Redeem"}
+            {isRedeeming ? "Redeeming..." : "Redeem Code"}
           </button>
         </form>
 
         {inviteSuccessMsg && (
-          <div className="text-xs text-emerald-400 flex items-center gap-1.5 pt-1">
-            <CheckCircle className="w-3.5 h-3.5" />
-            {inviteSuccessMsg}
+          <div className="text-xs text-emerald-400 flex items-center gap-1.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <CheckCircle className="w-4 h-4" />
+            <span>{inviteSuccessMsg}</span>
           </div>
         )}
 
-        {inviteErrorMsg && <div className="text-xs text-rose-400 pt-1">{inviteErrorMsg}</div>}
+        {inviteErrorMsg && (
+          <div className="text-xs text-rose-400 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
+            {inviteErrorMsg}
+          </div>
+        )}
       </div>
 
-      {/* Customer Portal Link */}
+      {/* Stripe Portal Link */}
       <div className="text-center pt-2">
         <a
-          href="https://cursorbuddy.ai/account"
+          href="https://mark816p.github.io/cursorbuddy/"
           target="_blank"
           rel="noreferrer"
-          className="text-xs text-slate-400 hover:text-slate-200 inline-flex items-center gap-1 transition"
+          className="text-xs text-slate-400 hover:text-slate-200 inline-flex items-center gap-1.5 transition"
         >
-          Manage billing and invoices in Stripe Customer Portal
-          <ExternalLink className="w-3 h-3" />
+          <Shield className="w-3.5 h-3.5 text-blue-400" />
+          <span>Manage subscription & billing in Stripe Customer Portal</span>
+          <ExternalLink className="w-3 h-3 text-slate-500" />
         </a>
       </div>
     </div>

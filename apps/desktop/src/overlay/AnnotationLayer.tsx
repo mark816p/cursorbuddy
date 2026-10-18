@@ -16,31 +16,31 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
           const key = `ann-${ann.step}-${ann.type}-${idx}`;
 
           if (ann.type === "circle") {
-            const rx = Math.max(12, ann.w / 2);
-            const ry = Math.max(12, ann.h / 2);
+            const rx = Math.max(14, ann.w / 2);
+            const ry = Math.max(14, ann.h / 2);
             const cx = ann.x + rx;
             const cy = ann.y + ry;
 
             return (
               <motion.g
                 key={key}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.25 }}
                 filter="url(#glow)"
               >
                 {/* Outer pulsing ring */}
                 <ellipse
                   cx={cx}
                   cy={cy}
-                  rx={rx + 6}
-                  ry={ry + 6}
+                  rx={rx + 8}
+                  ry={ry + 8}
                   fill="none"
                   stroke="#60a5fa"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   strokeDasharray="6 4"
-                  opacity={0.6}
+                  opacity={0.7}
                   className="animate-pulse"
                 />
 
@@ -50,13 +50,13 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   cy={cy}
                   rx={rx}
                   ry={ry}
-                  fill="rgba(59, 130, 246, 0.12)"
+                  fill="rgba(59, 130, 246, 0.15)"
                   stroke="#3b82f6"
                   strokeWidth="3.5"
                 />
 
-                {/* Step badge */}
-                <circle cx={cx - rx} cy={cy - ry} r="13" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                {/* Step badge with drop shadow */}
+                <circle cx={cx - rx} cy={cy - ry} r="14" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
                 <text
                   x={cx - rx}
                   y={cy - ry + 4.5}
@@ -64,32 +64,32 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   fill="#ffffff"
                   fontSize="12"
                   fontWeight="bold"
-                  fontFamily="sans-serif"
+                  fontFamily="Inter, system-ui, sans-serif"
                 >
                   {ann.step}
                 </text>
 
                 {/* Optional label */}
                 {ann.label && (
-                  <g transform={`translate(${cx + rx + 8}, ${cy - 12})`}>
+                  <g transform={`translate(${cx + rx + 10}, ${cy - 14})`}>
                     <rect
                       x="0"
                       y="0"
-                      width={Math.min(240, ann.label.length * 8 + 16)}
-                      height="26"
-                      rx="6"
-                      fill="#0f172a"
-                      fillOpacity={0.9}
+                      width={Math.min(260, ann.label.length * 8.5 + 20)}
+                      height="28"
+                      rx="8"
+                      fill="#0b0f19"
+                      fillOpacity={0.96}
                       stroke="#3b82f6"
                       strokeWidth="1.5"
                     />
                     <text
-                      x="8"
-                      y="17"
+                      x="10"
+                      y="18"
                       fill="#f8fafc"
-                      fontSize="11"
-                      fontWeight="500"
-                      fontFamily="sans-serif"
+                      fontSize="12"
+                      fontWeight="600"
+                      fontFamily="Inter, system-ui, sans-serif"
                     >
                       {ann.label}
                     </text>
@@ -111,7 +111,7 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                 initial={{ opacity: 0, pathLength: 0 }}
                 animate={{ opacity: 1, pathLength: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.35 }}
                 filter="url(#glow)"
               >
                 {/* Arrow line */}
@@ -121,13 +121,13 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   x2={toX}
                   y2={toY}
                   stroke="#3b82f6"
-                  strokeWidth="4"
+                  strokeWidth="4.5"
                   strokeLinecap="round"
                   markerEnd="url(#arrowhead)"
                 />
 
                 {/* Origin step badge */}
-                <circle cx={fromX} cy={fromY} r="13" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx={fromX} cy={fromY} r="14" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
                 <text
                   x={fromX}
                   y={fromY + 4.5}
@@ -135,32 +135,32 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   fill="#ffffff"
                   fontSize="12"
                   fontWeight="bold"
-                  fontFamily="sans-serif"
+                  fontFamily="Inter, system-ui, sans-serif"
                 >
                   {ann.step}
                 </text>
 
                 {/* Label if provided */}
                 {ann.label && (
-                  <g transform={`translate(${(fromX + toX) / 2}, ${(fromY + toY) / 2 - 28})`}>
+                  <g transform={`translate(${(fromX + toX) / 2}, ${(fromY + toY) / 2 - 32})`}>
                     <rect
                       x="0"
                       y="0"
-                      width={Math.min(240, ann.label.length * 8 + 16)}
-                      height="24"
-                      rx="4"
-                      fill="#0f172a"
-                      fillOpacity={0.9}
+                      width={Math.min(260, ann.label.length * 8.5 + 20)}
+                      height="26"
+                      rx="6"
+                      fill="#0b0f19"
+                      fillOpacity={0.96}
                       stroke="#3b82f6"
-                      strokeWidth="1"
+                      strokeWidth="1.5"
                     />
                     <text
-                      x="8"
-                      y="16"
+                      x="10"
+                      y="17"
                       fill="#f8fafc"
                       fontSize="11"
-                      fontWeight="500"
-                      fontFamily="sans-serif"
+                      fontWeight="600"
+                      fontFamily="Inter, system-ui, sans-serif"
                     >
                       {ann.label}
                     </text>
@@ -177,7 +177,7 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
                 filter="url(#glow)"
               >
                 <rect
@@ -185,14 +185,14 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   y={ann.y}
                   width={ann.w}
                   height={ann.h}
-                  rx="6"
+                  rx="8"
                   fill="rgba(59, 130, 246, 0.18)"
                   stroke="#3b82f6"
-                  strokeWidth="3"
+                  strokeWidth="3.5"
                 />
 
                 {/* Step badge */}
-                <circle cx={ann.x} cy={ann.y} r="12" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                <circle cx={ann.x} cy={ann.y} r="13" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
                 <text
                   x={ann.x}
                   y={ann.y + 4.5}
@@ -200,7 +200,7 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                   fill="#ffffff"
                   fontSize="11"
                   fontWeight="bold"
-                  fontFamily="sans-serif"
+                  fontFamily="Inter, system-ui, sans-serif"
                 >
                   {ann.step}
                 </text>
@@ -210,7 +210,7 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
 
           if (ann.type === "note") {
             const noteText = ann.label || "Click here";
-            const noteWidth = Math.min(280, noteText.length * 8.5 + 48);
+            const noteWidth = Math.min(300, noteText.length * 8.5 + 54);
 
             return (
               <motion.g
@@ -218,44 +218,44 @@ export const AnnotationLayer: React.FC<AnnotationLayerProps> = ({ annotations, e
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
                 filter="url(#glow)"
               >
                 {/* Pointer indicator */}
-                <circle cx={ann.x} cy={ann.y} r="6" fill="#3b82f6" stroke="#ffffff" strokeWidth="2" />
+                <circle cx={ann.x} cy={ann.y} r="7" fill="#3b82f6" stroke="#ffffff" strokeWidth="2" />
 
                 {/* Note Bubble */}
-                <g transform={`translate(${ann.x + 8}, ${ann.y - 18})`}>
+                <g transform={`translate(${ann.x + 10}, ${ann.y - 20})`}>
                   <rect
                     width={noteWidth}
-                    height="36"
-                    rx="8"
-                    fill="#0f172a"
-                    fillOpacity={0.95}
+                    height="38"
+                    rx="10"
+                    fill="#0b0f19"
+                    fillOpacity={0.96}
                     stroke="#3b82f6"
                     strokeWidth="2"
                   />
                   {/* Step Badge */}
-                  <circle cx="18" cy="18" r="10" fill="#2563eb" />
+                  <circle cx="20" cy="19" r="11" fill="#2563eb" />
                   <text
-                    x="18"
-                    y="22"
+                    x="20"
+                    y="23"
                     textAnchor="middle"
                     fill="#ffffff"
                     fontSize="11"
                     fontWeight="bold"
-                    fontFamily="sans-serif"
+                    fontFamily="Inter, system-ui, sans-serif"
                   >
                     {ann.step}
                   </text>
                   {/* Label Text */}
                   <text
-                    x="34"
-                    y="22"
+                    x="38"
+                    y="23"
                     fill="#f8fafc"
                     fontSize="12"
-                    fontWeight="500"
-                    fontFamily="sans-serif"
+                    fontWeight="600"
+                    fontFamily="Inter, system-ui, sans-serif"
                   >
                     {noteText}
                   </text>

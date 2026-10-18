@@ -8,6 +8,8 @@ import {
   Sparkles,
   ExternalLink,
   ShieldCheck,
+  Keyboard,
+  ArrowRight,
 } from "lucide-react";
 import { listen } from "@tauri-apps/api/event";
 
@@ -34,8 +36,18 @@ export const OnboardingWindow: React.FC = () => {
     };
 
     setupListener();
+
+    // Also support keyboard testing directly in the window
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey && e.altKey) || (e.metaKey && e.altKey)) {
+        setTestedHotkey(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       unlisten?.();
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -61,59 +73,84 @@ export const OnboardingWindow: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-slate-950 text-slate-100 flex flex-col justify-between p-8 font-sans select-none">
-      {/* Header Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30">
+    <div className="h-screen w-screen bg-slate-950 text-slate-100 flex flex-col justify-between p-8 font-sans select-none overflow-hidden">
+      {/* Top Bar with Step Indicators */}
+      <div className="flex items-center justify-between border-b border-slate-800/80 pb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/25">
             CB
           </div>
           <div>
-            <h1 className="text-base font-semibold leading-tight text-white">
-              Welcome to Cursorbuddy
+            <h1 className="text-sm font-bold text-white leading-tight">
+              Cursorbuddy Setup & Calibration
             </h1>
-            <p className="text-xs text-slate-400">First-Run Setup & Calibration</p>
+            <p className="text-[11px] text-slate-400">First-Run Configuration Wizard</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
-          <span>Step {step} of 3</span>
+
+        {/* Step Progress Pills */}
+        <div className="flex items-center gap-2">
+          {[
+            { num: 1, label: "Welcome" },
+            { num: 2, label: "Permissions" },
+            { num: 3, label: "Test Hotkey" },
+          ].map((s) => (
+            <div key={s.num} className="flex items-center gap-2">
+              <div
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition ${
+                  step === s.num
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                    : step > s.num
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    : "bg-slate-900 text-slate-500 border border-slate-800"
+                }`}
+              >
+                <span>{s.num}.</span>
+                <span>{s.label}</span>
+              </div>
+              {s.num < 3 && <div className="w-3 h-0.5 bg-slate-800" />}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 py-8 max-w-xl mx-auto w-full flex flex-col justify-center">
+      {/* Main Step Content */}
+      <div className="flex-1 py-6 max-w-xl mx-auto w-full flex flex-col justify-center">
         {step === 1 && (
-          <div className="space-y-6">
-            <div className="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto text-blue-400 shadow-xl shadow-blue-500/10">
-              <Sparkles className="w-8 h-8" />
+          <div className="space-y-6 text-center animate-in fade-in duration-200">
+            <div className="relative inline-block mx-auto">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-blue-500/30">
+                <Sparkles className="w-10 h-10" />
+              </div>
             </div>
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white tracking-tight">
-                An AI companion that teaches, never clicks.
+
+            <div className="space-y-2">
+              <h2 className="text-2xl font-extrabold text-white tracking-tight">
+                An AI companion that teaches you where to click.
               </h2>
-              <p className="text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
-                Hold your hotkey, ask a voice question about your screen, and Cursorbuddy will speak
-                the guidance and draw clear annotations to guide your next click.
+              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
+                Unlike bots that hijack your cursor and make risky clicks, Cursorbuddy explains the next action and projects clear SVG annotations right over your screen.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-              <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-lg space-y-1">
-                <div className="font-semibold text-slate-200">Push-to-Talk Hotkey</div>
-                <div className="text-slate-400">
-                  <span className="font-mono text-blue-400 font-bold">
-                    {isMac ? "Option + Command" : "Ctrl + Alt"}
-                  </span>{" "}
-                  to speak a question.
+            <div className="grid grid-cols-2 gap-3 text-left pt-2">
+              <div className="bg-slate-900/70 border border-slate-800 p-4 rounded-2xl space-y-1.5">
+                <div className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                  <Keyboard className="w-4 h-4 text-blue-400" />
+                  <span>Push-to-Talk Hotkey</span>
+                </div>
+                <div className="text-xs text-slate-400">
+                  Hold <kbd className="kbd-key text-blue-300">{isMac ? "Option + Cmd" : "Ctrl + Alt"}</kbd> to ask a voice question about your screen.
                 </div>
               </div>
-              <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-lg space-y-1">
-                <div className="font-semibold text-slate-200">Voice Dictation</div>
-                <div className="text-slate-400">
-                  <span className="font-mono text-purple-400 font-bold">
-                    {isMac ? "Option+Cmd+Shift" : "Ctrl+Alt+Shift"}
-                  </span>{" "}
-                  to dictate text.
+
+              <div className="bg-slate-900/70 border border-slate-800 p-4 rounded-2xl space-y-1.5">
+                <div className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                  <Mic className="w-4 h-4 text-purple-400" />
+                  <span>Voice Dictation</span>
+                </div>
+                <div className="text-xs text-slate-400">
+                  Hold <kbd className="kbd-key text-purple-300">{isMac ? "Opt+Cmd+Shift" : "Ctrl+Alt+Shift"}</kbd> to transcribe speech and restore clipboard.
                 </div>
               </div>
             </div>
@@ -121,37 +158,36 @@ export const OnboardingWindow: React.FC = () => {
         )}
 
         {step === 2 && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-in fade-in duration-200">
             <div className="text-center space-y-1">
-              <h2 className="text-xl font-bold text-white">System Permissions</h2>
+              <h2 className="text-2xl font-bold text-white tracking-tight">Operating System Permissions</h2>
               <p className="text-xs text-slate-400">
-                Cursorbuddy requires standard OS access to listen to your voice and inspect the
-                active screen.
+                Cursorbuddy needs standard desktop access to process push-to-talk audio and inspect the active screen.
               </p>
             </div>
 
             <div className="space-y-3">
-              {/* Microphone */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3.5 flex items-center justify-between">
+              {/* Mic Permission */}
+              <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
-                    <Mic className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                    <Mic className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-slate-200">Microphone Access</div>
-                    <div className="text-xs text-slate-400">
-                      Required for push-to-talk and voice dictation.
+                    <div className="text-xs font-bold text-slate-200">Microphone Access</div>
+                    <div className="text-[11px] text-slate-400">
+                      Captures voice solely while the hotkey is held; zero disk writes.
                     </div>
                   </div>
                 </div>
                 {micGranted ? (
-                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-medium">
-                    <CheckCircle2 className="w-4 h-4" /> Granted
+                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Granted
                   </span>
                 ) : (
                   <button
                     onClick={() => openPermissionSettings("mic")}
-                    className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded flex items-center gap-1"
+                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-xl flex items-center gap-1 transition"
                   >
                     Allow <ExternalLink className="w-3 h-3" />
                   </button>
@@ -159,26 +195,26 @@ export const OnboardingWindow: React.FC = () => {
               </div>
 
               {/* Screen Recording */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3.5 flex items-center justify-between">
+              <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
-                    <Monitor className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                    <Monitor className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-slate-200">Screen Capture</div>
-                    <div className="text-xs text-slate-400">
-                      Captures only when hotkey is held; zero disk writes.
+                    <div className="text-xs font-bold text-slate-200">Display Capture</div>
+                    <div className="text-[11px] text-slate-400">
+                      Captures the active monitor only upon hotkey release. Never runs continuously.
                     </div>
                   </div>
                 </div>
                 {screenGranted ? (
-                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-medium">
-                    <CheckCircle2 className="w-4 h-4" /> Granted
+                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Granted
                   </span>
                 ) : (
                   <button
                     onClick={() => openPermissionSettings("screen")}
-                    className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded flex items-center gap-1"
+                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-xl flex items-center gap-1 transition"
                   >
                     Allow <ExternalLink className="w-3 h-3" />
                   </button>
@@ -186,26 +222,26 @@ export const OnboardingWindow: React.FC = () => {
               </div>
 
               {/* Accessibility */}
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3.5 flex items-center justify-between">
+              <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
-                    <Eye className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                    <Eye className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-slate-200">UI Automation & Tree</div>
-                    <div className="text-xs text-slate-400">
-                      Enables pixel-perfect snapping to native controls.
+                    <div className="text-xs font-bold text-slate-200">Accessibility & UI Tree</div>
+                    <div className="text-[11px] text-slate-400">
+                      Enables pixel-perfect snapping to native buttons and menus via UIAutomation.
                     </div>
                   </div>
                 </div>
                 {accessibilityGranted ? (
-                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-medium">
-                    <CheckCircle2 className="w-4 h-4" /> Granted
+                  <span className="text-emerald-400 flex items-center gap-1 text-xs font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Granted
                   </span>
                 ) : (
                   <button
                     onClick={() => openPermissionSettings("accessibility")}
-                    className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded flex items-center gap-1"
+                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-xl flex items-center gap-1 transition"
                   >
                     Allow <ExternalLink className="w-3 h-3" />
                   </button>
@@ -213,60 +249,70 @@ export const OnboardingWindow: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-900/60 border border-slate-800 rounded-lg p-3 text-xs text-slate-400 flex items-center gap-2">
+            <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-3 text-xs text-slate-400 flex items-center gap-2.5">
               <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
               <span>
-                Passwords, banking sites, and private browser windows are automatically blacked out
-                on your device before compression.
+                Passwords, banking sites, and incognito browser tabs are automatically blacked out directly on your GPU before downscaling or sending.
               </span>
             </div>
           </div>
         )}
 
         {step === 3 && (
-          <div className="space-y-6 text-center">
+          <div className="space-y-6 text-center animate-in fade-in duration-200">
             <div className="space-y-2">
-              <h2 className="text-xl font-bold text-white">Test Your Hotkey</h2>
+              <h2 className="text-2xl font-bold text-white tracking-tight">Test Your Global Hotkey</h2>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
                 Press and hold{" "}
-                <kbd className="px-2 py-1 bg-slate-800 border border-slate-700 rounded font-mono text-white">
-                  {isMac ? "Option + Command" : "Ctrl + Alt"}
-                </kbd>{" "}
-                now to verify your global hotkey pipeline.
+                <kbd className="kbd-key text-blue-300">{isMac ? "Option + Command" : "Ctrl + Alt"}</kbd>{" "}
+                right now to verify your global hotkey pipeline.
               </p>
             </div>
 
-            <div className="p-8 bg-slate-900 border border-slate-800 rounded-xl max-w-sm mx-auto">
+            <div className="p-8 bg-slate-900/80 border border-slate-800 rounded-3xl max-w-sm mx-auto shadow-xl relative overflow-hidden">
               <div
-                className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center transition-all duration-300 ${
+                className={`w-24 h-24 rounded-full mx-auto flex items-center justify-center transition-all duration-300 ${
                   testedHotkey
-                    ? "bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 scale-105 shadow-lg shadow-emerald-500/20"
-                    : "bg-blue-500/10 border-2 border-dashed border-blue-400/50 text-blue-400 animate-pulse"
+                    ? "bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 scale-105 shadow-xl shadow-emerald-500/20"
+                    : "bg-blue-600/10 border-2 border-dashed border-blue-400/50 text-blue-400 animate-pulse"
                 }`}
               >
-                {testedHotkey ? <CheckCircle2 className="w-10 h-10" /> : <Mic className="w-8 h-8" />}
+                {testedHotkey ? (
+                  <CheckCircle2 className="w-12 h-12" />
+                ) : (
+                  <Mic className="w-10 h-10" />
+                )}
               </div>
-              <div className="mt-4 font-medium text-sm text-slate-200">
-                {testedHotkey
-                  ? "Hotkey detected successfully!"
-                  : "Waiting for hotkey press..."}
+
+              <div className="mt-5 font-bold text-sm text-slate-100">
+                {testedHotkey ? "Hotkey Verified Successfully!" : "Listening for Shortcut..."}
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+
+              <p className="text-xs text-slate-400 mt-1">
                 {testedHotkey
-                  ? "Your microphone and key listener are active and calibrated."
-                  : `Hold ${isMac ? "Option+Cmd" : "Ctrl+Alt"} to test`}
+                  ? "Your microphone, screen capture, and global listener are calibrated."
+                  : `Press ${isMac ? "Option + Cmd" : "Ctrl + Alt"} to test`}
               </p>
+
+              {!testedHotkey && (
+                <button
+                  onClick={() => setTestedHotkey(true)}
+                  className="mt-4 text-[11px] text-slate-500 hover:text-slate-300 underline"
+                >
+                  Skip test in simulator mode
+                </button>
+              )}
             </div>
           </div>
         )}
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex items-center justify-between border-t border-slate-800 pt-4">
+      <div className="flex items-center justify-between border-t border-slate-800/80 pt-5">
         {step > 1 ? (
           <button
             onClick={() => setStep(step - 1)}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 rounded-lg transition"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 rounded-xl transition"
           >
             Back
           </button>
@@ -277,16 +323,18 @@ export const OnboardingWindow: React.FC = () => {
         {step < 3 ? (
           <button
             onClick={() => setStep(step + 1)}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white rounded-lg shadow-md flex items-center gap-1.5 transition"
+            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white rounded-xl shadow-lg shadow-blue-600/25 flex items-center gap-1.5 transition"
           >
-            Next <ChevronRight className="w-4 h-4" />
+            <span>Continue</span>
+            <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
           <button
             onClick={completeOnboarding}
-            className="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-semibold text-white rounded-lg shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition"
+            className="px-7 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-bold text-white rounded-xl shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition"
           >
-            Start Using Cursorbuddy <Sparkles className="w-4 h-4" />
+            <span>Start Using Cursorbuddy</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
         )}
       </div>

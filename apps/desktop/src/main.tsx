@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 import { SettingsWindow } from "./settings/SettingsWindow.js";
 import { OverlayWindow } from "./overlay/OverlayWindow.js";
 import { MascotWindow } from "./mascot/MascotWindow.js";
