@@ -26,6 +26,21 @@ import {
   Cpu,
   Check,
   Keyboard,
+  Folder,
+  Search,
+  GitBranch,
+  Play,
+  Wrench,
+  Move,
+  Layers,
+  Table,
+  Filter,
+  BarChart3,
+  Sliders,
+  Square,
+  Type,
+  Columns,
+  Grid,
 } from "lucide-react";
 
 // Direct GitHub Release Download Links
@@ -52,7 +67,7 @@ const SCENARIOS: Scenario[] = [
     category: "Software Engineering",
     icon: Code2,
     userQuestion: "How do I format this document with Prettier?",
-    spokenGuidance: "Click the 'Format Document' icon in the top right action bar or press Shift+Alt+F.",
+    spokenGuidance: "Click the 'Format Document' icon in the top right editor tab bar or press Shift+Alt+F.",
     targetButtonLabel: "Format Document",
     stepNumber: 1,
   },
@@ -63,8 +78,8 @@ const SCENARIOS: Scenario[] = [
     icon: Box,
     userQuestion: "Where do I find the Subdivision Surface modifier?",
     spokenGuidance: "Click the blue wrench 'Modifier Properties' tab on the right panel, then select 'Add Modifier'.",
-    targetButtonLabel: "Modifier Properties",
-    stepNumber: 2,
+    targetButtonLabel: "Modifier Properties > Add Modifier",
+    stepNumber: 1,
   },
   {
     id: "excel",
@@ -83,7 +98,7 @@ const SCENARIOS: Scenario[] = [
     icon: Palette,
     userQuestion: "How do I turn on Auto-Layout wrapping for this frame?",
     spokenGuidance: "In the right Design sidebar, look under 'Auto layout' and toggle the third icon for 'Wrap'.",
-    targetButtonLabel: "Auto Layout > Wrap",
+    targetButtonLabel: "Auto Layout > Wrap Items",
     stepNumber: 1,
   },
 ];
@@ -119,6 +134,517 @@ export const App: React.FC = () => {
     navigator.clipboard.writeText("Ctrl + Alt");
     setCopiedShortcut(true);
     setTimeout(() => setCopiedShortcut(false), 2000);
+  };
+
+  // Render authentic workspace for VS Code
+  const renderVsCodeWorkspace = () => (
+    <div className="flex-1 flex overflow-hidden font-mono text-xs select-none">
+      {/* Activity Bar */}
+      <div className="w-11 bg-slate-950 border-r border-slate-800 flex flex-col items-center py-3 justify-between text-slate-500 shrink-0">
+        <div className="space-y-4 flex flex-col items-center">
+          <div className="text-white border-l-2 border-blue-500 pl-1">
+            <Folder className="w-4 h-4 text-blue-400" />
+          </div>
+          <Search className="w-4 h-4 hover:text-slate-300 transition" />
+          <GitBranch className="w-4 h-4 hover:text-slate-300 transition" />
+          <Play className="w-4 h-4 hover:text-slate-300 transition" />
+        </div>
+        <Sliders className="w-4 h-4 hover:text-slate-300 transition" />
+      </div>
+
+      {/* Explorer Sidebar */}
+      <div className="w-44 bg-slate-900/90 border-r border-slate-800 p-3 hidden sm:flex flex-col text-[11px] text-slate-400 shrink-0">
+        <div className="font-bold text-[10px] text-slate-300 uppercase tracking-wider mb-2">Explorer</div>
+        <div className="space-y-1">
+          <div className="text-slate-500">&gt; node_modules</div>
+          <div className="text-slate-300 font-semibold">v src/</div>
+          <div className="pl-3 text-blue-400 font-bold bg-blue-600/10 px-1 py-0.5 rounded">App.tsx •</div>
+          <div className="pl-3 hover:text-slate-200">index.css</div>
+          <div className="pl-3 hover:text-slate-200">main.tsx</div>
+          <div className="text-slate-500">package.json</div>
+        </div>
+      </div>
+
+      {/* Code Editor Body */}
+      <div className="flex-1 flex flex-col bg-slate-950/70 overflow-hidden">
+        {/* Editor Tabs Header */}
+        <div className="bg-slate-950 border-b border-slate-800 flex items-center justify-between px-3 h-9 shrink-0">
+          <div className="flex items-center">
+            <div className="bg-slate-900 border-t-2 border-blue-500 px-3 py-1.5 text-xs text-white flex items-center gap-2">
+              <span className="text-blue-400 font-bold">TSX</span>
+              <span>App.tsx</span>
+              <span className="text-slate-500 text-[10px]">✕</span>
+            </div>
+            <div className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300">index.css</div>
+          </div>
+
+          {/* Target Button: Format Document */}
+          <div className="flex items-center gap-2">
+            <button
+              id="vscode-format-btn"
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-300 border border-blue-500/50 rounded flex items-center gap-1.5 text-[11px] font-sans font-semibold transition"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+              <span>Format Document</span>
+            </button>
+            <Play className="w-3.5 h-3.5 text-emerald-400 cursor-pointer" />
+          </div>
+        </div>
+
+        {/* Code Lines Area */}
+        <div className="p-4 space-y-1.5 overflow-hidden text-xs font-mono leading-relaxed text-slate-300">
+          <div className="text-slate-600">
+            <span className="text-slate-600 mr-4 select-none">1</span>
+            <span className="text-purple-400">import</span> React, &#123; useState &#125;{" "}
+            <span className="text-purple-400">from</span> <span className="text-emerald-400">"react"</span>;
+          </div>
+          <div>
+            <span className="text-slate-600 mr-4 select-none">2</span>
+            <span className="text-purple-400">import</span> &#123; Companion &#125;{" "}
+            <span className="text-purple-400">from</span> <span className="text-emerald-400">"@cursorbuddy/sdk"</span>;
+          </div>
+          <div>
+            <span className="text-slate-600 mr-4 select-none">3</span>
+          </div>
+          <div>
+            <span className="text-slate-600 mr-4 select-none">4</span>
+            <span className="text-blue-400">export const</span> <span className="text-amber-300">WorkspaceView</span> = () =&gt; &#123;
+          </div>
+          <div className="pl-4">
+            <span className="text-slate-600 mr-4 select-none">5</span>
+            <span className="text-blue-400">const</span> [active, setActive] = useState(
+            <span className="text-amber-300">true</span>);
+          </div>
+          <div className="pl-4 text-slate-500">
+            <span className="text-slate-600 mr-4 select-none">6</span>
+            // Unformatted line: needs Prettier alignment
+          </div>
+          <div className="pl-4 bg-blue-950/20 py-0.5 rounded border-l-2 border-amber-400">
+            <span className="text-slate-600 mr-4 select-none">7</span>
+            <span className="text-blue-400">const</span> settings = &#123;hotkey:<span className="text-emerald-400">"Ctrl+Alt"</span>,mode:<span className="text-emerald-400">"zero-disk"</span>,buffer:<span className="text-emerald-400">"RAM"</span>&#125;;
+          </div>
+          <div className="pl-4">
+            <span className="text-slate-600 mr-4 select-none">8</span>
+            <span className="text-purple-400">return</span> &lt;<span className="text-teal-300">CompanionCanvas</span> overlay=&#123;active&#125; /&gt;;
+          </div>
+          <div>
+            <span className="text-slate-600 mr-4 select-none">9</span>
+            &#125;;
+          </div>
+        </div>
+
+        {/* VS Code Status Bar */}
+        <div className="mt-auto bg-blue-600/20 border-t border-slate-800 px-3 py-1 flex items-center justify-between text-[10px] text-slate-400">
+          <div className="flex items-center gap-3">
+            <span>Ln 7, Col 18</span>
+            <span>Spaces: 2</span>
+            <span>UTF-8</span>
+          </div>
+          <div className="flex items-center gap-2 text-blue-400 font-semibold">
+            <span>TypeScript React</span>
+            <span>Prettier: Warning</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Render authentic workspace for Blender 3D
+  const renderBlenderWorkspace = () => (
+    <div className="flex-1 flex overflow-hidden font-sans text-xs select-none bg-slate-950">
+      {/* 3D Viewport Tool Strip */}
+      <div className="w-10 bg-slate-900 border-r border-slate-800 flex flex-col items-center py-3 gap-3 text-slate-400 shrink-0">
+        <div className="p-1.5 bg-blue-600 text-white rounded-lg">
+          <MousePointer className="w-4 h-4" />
+        </div>
+        <Move className="w-4 h-4 hover:text-white cursor-pointer" />
+        <RefreshCw className="w-4 h-4 hover:text-white cursor-pointer" />
+        <Square className="w-4 h-4 hover:text-white cursor-pointer" />
+        <Grid className="w-4 h-4 hover:text-white cursor-pointer" />
+      </div>
+
+      {/* Main 3D Viewport Area */}
+      <div className="flex-1 flex flex-col bg-slate-950/90 relative overflow-hidden">
+        {/* Top Viewport Header */}
+        <div className="bg-slate-900/80 border-b border-slate-800 px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-300 shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">Layout</span>
+            <span className="text-slate-400">Modeling</span>
+            <span className="text-slate-400">Sculpting</span>
+            <span className="text-slate-400">UV Editing</span>
+            <span className="text-slate-400">Shading</span>
+          </div>
+          <div className="text-[10px] text-slate-500 font-mono">User Perspective • Collection &gt; Cube</div>
+        </div>
+
+        {/* 3D Isometric Viewport Wireframe */}
+        <div className="flex-1 relative flex items-center justify-center p-6">
+          {/* Coordinate axes */}
+          <div className="absolute inset-x-8 top-1/2 h-[1px] bg-rose-500/30" />
+          <div className="absolute inset-y-8 left-1/2 w-[1px] bg-emerald-500/30" />
+
+          {/* 3D Cube Geometry with volumetric highlights */}
+          <div className="relative w-40 h-40">
+            <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
+              {/* Top face */}
+              <polygon points="50,15 85,32 50,50 15,32" fill="#3b82f6" fillOpacity="0.4" stroke="#60a5fa" strokeWidth="1.5" />
+              {/* Left face */}
+              <polygon points="15,32 50,50 50,85 15,67" fill="#1d4ed8" fillOpacity="0.5" stroke="#3b82f6" strokeWidth="1.5" />
+              {/* Right face */}
+              <polygon points="50,50 85,32 85,67 50,85" fill="#1e40af" fillOpacity="0.6" stroke="#2563eb" strokeWidth="1.5" />
+            </svg>
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300 font-mono bg-slate-900/90 px-1.5 py-0.5 rounded border border-blue-500/30">
+              SubD Level: 0
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline Bar */}
+        <div className="bg-slate-900 border-t border-slate-800 px-3 py-1 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+          <span>Playback 0 / 250</span>
+          <span>FPS: 60.0 • No Modifiers Active</span>
+        </div>
+      </div>
+
+      {/* Right Properties Panel */}
+      <div className="w-56 bg-slate-900 border-l border-slate-800 p-3 flex flex-col justify-between shrink-0">
+        <div className="space-y-3">
+          {/* Vertical property icon pills */}
+          <div className="flex items-center gap-1.5 pb-2 border-b border-slate-800 text-slate-400">
+            <Box className="w-4 h-4 text-slate-500" />
+            <Layers className="w-4 h-4 text-slate-500" />
+            {/* The Target Wrench Icon */}
+            <div className="p-1 bg-blue-600 text-white rounded">
+              <Wrench className="w-4 h-4" />
+            </div>
+            <Grid className="w-4 h-4 text-slate-500" />
+          </div>
+
+          <div className="font-bold text-xs text-white">Modifier Properties</div>
+          <p className="text-[11px] text-slate-400">Add generative mesh deformers to active object.</p>
+
+          {/* The Target Action Button */}
+          <button
+            id="blender-modifier-btn"
+            className="w-full px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center justify-between shadow-lg shadow-blue-600/30 transition"
+          >
+            <span className="flex items-center gap-1.5">
+              <Wrench className="w-3.5 h-3.5" />
+              <span>Add Modifier</span>
+            </span>
+            <span className="text-[10px] bg-blue-700 px-1.5 py-0.5 rounded font-mono">SubD</span>
+          </button>
+
+          <div className="space-y-1.5 pt-2 text-[11px] text-slate-400">
+            <div className="flex justify-between">
+              <span>Viewport Levels:</span>
+              <span className="font-mono text-white">2</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Render Levels:</span>
+              <span className="font-mono text-white">3</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Optimal Display:</span>
+              <span className="text-emerald-400 font-bold">Enabled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Render authentic workspace for Excel / Financials
+  const renderExcelWorkspace = () => (
+    <div className="flex-1 flex flex-col overflow-hidden font-sans text-xs select-none bg-slate-950">
+      {/* Excel Green Header Ribbon */}
+      <div className="bg-emerald-950/60 border-b border-emerald-800/60 px-4 py-2 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3 text-xs">
+          <span className="font-bold text-emerald-400">Excel Financials</span>
+          <span className="text-slate-400">AutoSave: On</span>
+          <span className="text-slate-500">|</span>
+          <span className="text-white font-semibold">Q3_Revenue_Forecast.xlsx</span>
+        </div>
+        <div className="text-[11px] text-emerald-300 font-mono">100% Zoom • 12,400 Rows</div>
+      </div>
+
+      {/* Ribbon Menu Tabs */}
+      <div className="bg-slate-900 border-b border-slate-800 px-4 flex items-center gap-6 text-xs text-slate-400 h-9 shrink-0">
+        <span>File</span>
+        <span>Home</span>
+        {/* Active Insert Tab */}
+        <span className="text-white font-bold border-b-2 border-emerald-500 py-1.5">Insert</span>
+        <span>Draw</span>
+        <span>Page Layout</span>
+        <span>Formulas</span>
+        <span>Data</span>
+      </div>
+
+      {/* Ribbon Action Tools Bar */}
+      <div className="bg-slate-900/90 border-b border-slate-800 p-2.5 flex items-center gap-4 shrink-0">
+        {/* The Target Action Button: PivotTable */}
+        <button
+          id="excel-pivottable-btn"
+          className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg flex items-center gap-2 text-xs font-bold shadow-md shadow-emerald-600/30 transition"
+        >
+          <Table className="w-4 h-4" />
+          <span>PivotTable</span>
+        </button>
+
+        <button className="px-2.5 py-1.5 bg-slate-800 text-slate-300 rounded flex items-center gap-1.5 text-xs hover:bg-slate-700">
+          <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Recommended Charts</span>
+        </button>
+
+        <button className="px-2.5 py-1.5 bg-slate-800 text-slate-300 rounded flex items-center gap-1.5 text-xs hover:bg-slate-700">
+          <Filter className="w-3.5 h-3.5 text-blue-400" />
+          <span>Slicer Filter</span>
+        </button>
+      </div>
+
+      {/* Formula Bar */}
+      <div className="bg-slate-950 border-b border-slate-800 px-4 py-1.5 flex items-center gap-2 text-xs font-mono shrink-0">
+        <span className="font-bold text-slate-500">fx</span>
+        <span className="text-slate-600">|</span>
+        <span className="text-emerald-400">=VLOOKUP(A4, RegionalData!$B$2:$G$800, 4, FALSE)</span>
+      </div>
+
+      {/* Financial Spreadsheet Data Grid */}
+      <div className="flex-1 overflow-hidden bg-slate-950 font-mono text-[11px]">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-900 text-slate-400 border-b border-slate-800 text-[10px]">
+              <th className="p-2 border-r border-slate-800 w-10 text-center">#</th>
+              <th className="p-2 border-r border-slate-800 font-bold text-white">A: Region</th>
+              <th className="p-2 border-r border-slate-800 font-bold text-white">B: Product Line</th>
+              <th className="p-2 border-r border-slate-800 font-bold text-white">C: Q3 Revenue</th>
+              <th className="p-2 border-r border-slate-800 font-bold text-white">D: Gross Margin</th>
+              <th className="p-2 font-bold text-white">E: YoY Growth</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800/60 text-slate-300">
+            <tr>
+              <td className="p-2 bg-slate-900/80 text-center text-slate-500 font-bold border-r border-slate-800">1</td>
+              <td className="p-2 border-r border-slate-800 text-white font-semibold">North America</td>
+              <td className="p-2 border-r border-slate-800">Enterprise AI Core</td>
+              <td className="p-2 border-r border-slate-800 text-emerald-400 font-bold">$742,000</td>
+              <td className="p-2 border-r border-slate-800">82.4%</td>
+              <td className="p-2 text-emerald-400 font-bold">+28.5%</td>
+            </tr>
+            <tr>
+              <td className="p-2 bg-slate-900/80 text-center text-slate-500 font-bold border-r border-slate-800">2</td>
+              <td className="p-2 border-r border-slate-800 text-white font-semibold">Europe (EMEA)</td>
+              <td className="p-2 border-r border-slate-800">Cloud Storage Tier</td>
+              <td className="p-2 border-r border-slate-800 text-emerald-400 font-bold">$488,500</td>
+              <td className="p-2 border-r border-slate-800">76.8%</td>
+              <td className="p-2 text-emerald-400 font-bold">+19.2%</td>
+            </tr>
+            <tr>
+              <td className="p-2 bg-slate-900/80 text-center text-slate-500 font-bold border-r border-slate-800">3</td>
+              <td className="p-2 border-r border-slate-800 text-white font-semibold">Asia Pacific</td>
+              <td className="p-2 border-r border-slate-800">Developer License</td>
+              <td className="p-2 border-r border-slate-800 text-emerald-400 font-bold">$315,200</td>
+              <td className="p-2 border-r border-slate-800">71.5%</td>
+              <td className="p-2 text-emerald-400 font-bold">+44.1%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  // Render authentic workspace for Figma UI Design
+  const renderFigmaWorkspace = () => (
+    <div className="flex-1 flex overflow-hidden font-sans text-xs select-none bg-slate-950">
+      {/* Left Layers Sidebar */}
+      <div className="w-48 bg-slate-900 border-r border-slate-800 p-3 hidden sm:flex flex-col text-[11px] text-slate-400 shrink-0">
+        <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 font-bold text-slate-300">
+          <span>Layers</span>
+          <span className="text-slate-500">Assets</span>
+        </div>
+        <div className="space-y-1">
+          <div className="text-blue-400 font-bold flex items-center gap-1.5">
+            <LayoutGridIcon className="w-3.5 h-3.5" />
+            <span># Hero Component</span>
+          </div>
+          <div className="pl-3 text-slate-300 flex items-center gap-1.5">
+            <Square className="w-3 h-3 text-slate-500" />
+            <span>Frame: Header</span>
+          </div>
+          <div className="pl-5 text-slate-400 flex items-center gap-1.5">
+            <Type className="w-3 h-3 text-slate-500" />
+            <span>Headline Title</span>
+          </div>
+          <div className="pl-5 text-purple-400 flex items-center gap-1.5 font-semibold">
+            <Columns className="w-3 h-3 text-purple-400" />
+            <span>Badge Wrap Row</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Central Figma Design Canvas */}
+      <div className="flex-1 flex flex-col bg-slate-950 relative overflow-hidden items-center justify-center p-6">
+        {/* Figma 50% dot grid background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
+
+        {/* Selected Frame in Canvas with Blue Handles */}
+        <div className="relative z-10 w-80 p-5 rounded-2xl bg-slate-900 border-2 border-purple-500 shadow-2xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-[10px] font-bold">
+              Auto Layout (Horizontal)
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono">640 × 380</span>
+          </div>
+          <div className="text-sm font-bold text-white">Dynamic Navigation Bar</div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <span className="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-semibold">
+              Dashboard
+            </span>
+            <span className="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-semibold">
+              Telemetry
+            </span>
+            <span className="px-2.5 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold">
+              Active Session
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Design Properties Panel */}
+      <div className="w-56 bg-slate-900 border-l border-slate-800 p-3.5 space-y-4 shrink-0">
+        <div className="font-bold text-xs text-white pb-2 border-b border-slate-800">Design Properties</div>
+
+        <div className="space-y-1.5 text-[11px] text-slate-400">
+          <div className="flex justify-between">
+            <span>Dimensions:</span>
+            <span className="font-mono text-white">W 640 • H 380</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Corner Radius:</span>
+            <span className="font-mono text-white">16px</span>
+          </div>
+        </div>
+
+        {/* The Target Section: Auto Layout */}
+        <div className="space-y-2 pt-2 border-t border-slate-800">
+          <div className="font-bold text-xs text-purple-300 flex items-center justify-between">
+            <span>Auto Layout</span>
+            <span className="text-[10px] text-slate-500 font-mono">Shift+A</span>
+          </div>
+
+          <div className="flex items-center justify-between gap-1">
+            <button className="flex-1 py-1 bg-slate-800 text-slate-400 rounded text-center text-xs">
+              ↓ Vert
+            </button>
+            <button className="flex-1 py-1 bg-slate-800 text-slate-400 rounded text-center text-xs">
+              → Horiz
+            </button>
+            {/* The Target Button: Wrap */}
+            <button
+              id="figma-wrap-btn"
+              className="flex-1 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-center text-xs font-bold shadow-md shadow-purple-600/30 transition flex items-center justify-center gap-1"
+            >
+              <Columns className="w-3 h-3" />
+              <span>Wrap</span>
+            </button>
+          </div>
+
+          <div className="text-[10px] text-slate-500 pt-1">Padding: 24px • Item Gap: 12px</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Helper icon component for Figma
+  function LayoutGridIcon(props: { className?: string }) {
+    return <Grid className={props.className} />;
+  }
+
+  // Dynamic annotation placement based on active scenario
+  const renderAnnotationOverlay = () => {
+    if (demoState !== "speaking") return null;
+
+    if (activeScenario.id === "vscode") {
+      return (
+        <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
+          {/* Target box over Format Document button */}
+          <div className="absolute top-[4px] right-[34px] w-[150px] h-[30px] border-2 border-blue-400 rounded-lg shadow-[0_0_25px_rgba(59,130,246,0.5)] animate-pulse flex items-center justify-center">
+            <span className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white">
+              {activeScenario.stepNumber}
+            </span>
+          </div>
+          {/* Spoken Guidance Card */}
+          <div className="absolute top-[42px] right-[20px] max-w-sm bg-slate-900/95 border border-blue-500/40 text-slate-200 p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl text-xs font-sans leading-relaxed">
+            <div className="font-bold text-blue-400 mb-1 flex items-center gap-1.5">
+              <Volume2 className="w-4 h-4" /> Spoken Guidance:
+            </div>
+            "{activeScenario.spokenGuidance}"
+          </div>
+        </div>
+      );
+    }
+
+    if (activeScenario.id === "blender") {
+      return (
+        <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
+          {/* Target box over Add Modifier button in right sidebar */}
+          <div className="absolute top-[88px] right-[14px] w-[200px] h-[40px] border-2 border-blue-400 rounded-xl shadow-[0_0_25px_rgba(59,130,246,0.5)] animate-pulse flex items-center justify-center">
+            <span className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white">
+              {activeScenario.stepNumber}
+            </span>
+          </div>
+          {/* Spoken Guidance Card */}
+          <div className="absolute top-[138px] right-[14px] max-w-xs bg-slate-900/95 border border-blue-500/40 text-slate-200 p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl text-xs font-sans leading-relaxed">
+            <div className="font-bold text-blue-400 mb-1 flex items-center gap-1.5">
+              <Volume2 className="w-4 h-4" /> Spoken Guidance:
+            </div>
+            "{activeScenario.spokenGuidance}"
+          </div>
+        </div>
+      );
+    }
+
+    if (activeScenario.id === "excel") {
+      return (
+        <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
+          {/* Target box over PivotTable in Ribbon */}
+          <div className="absolute top-[68px] left-[10px] w-[130px] h-[40px] border-2 border-emerald-400 rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.5)] animate-pulse flex items-center justify-center">
+            <span className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white">
+              {activeScenario.stepNumber}
+            </span>
+          </div>
+          {/* Spoken Guidance Card */}
+          <div className="absolute top-[120px] left-[10px] max-w-sm bg-slate-900/95 border border-emerald-500/40 text-slate-200 p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl text-xs font-sans leading-relaxed">
+            <div className="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+              <Volume2 className="w-4 h-4" /> Spoken Guidance:
+            </div>
+            "{activeScenario.spokenGuidance}"
+          </div>
+        </div>
+      );
+    }
+
+    if (activeScenario.id === "figma") {
+      return (
+        <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
+          {/* Target box over Auto Layout Wrap button */}
+          <div className="absolute top-[136px] right-[14px] w-[80px] h-[34px] border-2 border-purple-400 rounded-lg shadow-[0_0_25px_rgba(168,85,247,0.5)] animate-pulse flex items-center justify-center">
+            <span className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white">
+              {activeScenario.stepNumber}
+            </span>
+          </div>
+          {/* Spoken Guidance Card */}
+          <div className="absolute top-[180px] right-[14px] max-w-xs bg-slate-900/95 border border-purple-500/40 text-slate-200 p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl text-xs font-sans leading-relaxed">
+            <div className="font-bold text-purple-400 mb-1 flex items-center gap-1.5">
+              <Volume2 className="w-4 h-4" /> Spoken Guidance:
+            </div>
+            "{activeScenario.spokenGuidance}"
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -353,77 +879,24 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Mock App Screen Canvas */}
-              <div className="p-8 h-[380px] relative bg-slate-950/50 flex flex-col justify-between font-mono text-xs select-none overflow-hidden">
-                {/* Simulated Workspace Header Bar */}
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
-                  <div className="flex items-center gap-5 text-slate-400 text-xs">
-                    <span className="text-white font-bold">File</span>
-                    <span>Edit</span>
-                    <span>View</span>
-                    <span>Navigate</span>
-                    <span>Tools</span>
-                    <span>Help</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {/* The Target Action Button */}
-                    <button
-                      id="target-simulator-button"
-                      className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 rounded-lg flex items-center gap-1.5 transition text-xs font-sans font-semibold"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                      <span>{activeScenario.targetButtonLabel}</span>
-                    </button>
-                    <button className="px-3 py-1.5 bg-slate-800 text-slate-400 rounded-lg text-xs">
-                      Run
-                    </button>
-                  </div>
+              {/* User Voice Question Prompt Pill */}
+              <div className="bg-slate-900/90 border-b border-slate-800/80 px-4 py-2 flex items-center justify-between text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-400 font-bold">User Voice Prompt:</span>
+                  <span className="text-slate-200 font-sans italic">"{activeScenario.userQuestion}"</span>
                 </div>
+                <span className="text-[10px] text-slate-500 font-mono">Push-to-Talk 16kHz PCM</span>
+              </div>
 
-                {/* Workspace Body Mockup */}
-                <div className="space-y-3 py-6 text-slate-500">
-                  <div className="text-xs text-slate-400">
-                    // User Question: <span className="text-emerald-400 font-bold">"{activeScenario.userQuestion}"</span>
-                  </div>
-                  <div className="text-slate-600 text-xs">
-                    const activeWorkspaceState = loadContextModel(&#123; dpi: 1.25, monitors: 2 &#125;);
-                  </div>
-                  <div className="pl-4 text-slate-400">
-                    // Cursorbuddy inspects UIAutomation tree & snaps annotation coordinates
-                  </div>
-                  <div className="pl-4 text-blue-400">
-                    &lt;OverlayCanvas width="2560" height="1440" contentProtected="true" /&gt;
-                  </div>
-                </div>
+              {/* Mock App Screen Canvas with Scenario-Specific Rendering */}
+              <div className="h-[400px] relative bg-slate-950 flex flex-col justify-between overflow-hidden">
+                {activeScenario.id === "vscode" && renderVsCodeWorkspace()}
+                {activeScenario.id === "blender" && renderBlenderWorkspace()}
+                {activeScenario.id === "excel" && renderExcelWorkspace()}
+                {activeScenario.id === "figma" && renderFigmaWorkspace()}
 
-                {/* SVG Annotation Overlay Layer (Active when Speaking) */}
-                {demoState === "speaking" && (
-                  <div className="absolute inset-0 pointer-events-none z-30 animate-in fade-in duration-200">
-                    {/* Glowing Target Box */}
-                    <div className="absolute top-[26px] right-[62px] w-[180px] h-[40px] border-2 border-blue-400 rounded-xl shadow-[0_0_25px_rgba(59,130,246,0.5)] animate-pulse flex items-center justify-center">
-                      <span className="absolute -top-3.5 -left-3.5 w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white">
-                        {activeScenario.stepNumber}
-                      </span>
-                    </div>
-
-                    {/* Explanatory Floating Guidance Card */}
-                    <div className="absolute top-[82px] right-[40px] max-w-sm bg-slate-900/95 border border-blue-500/40 text-slate-200 p-4 rounded-2xl shadow-2xl backdrop-blur-xl text-xs font-sans leading-relaxed">
-                      <div className="font-bold text-blue-400 mb-1 flex items-center gap-1.5">
-                        <Volume2 className="w-4 h-4" /> Spoken Guidance:
-                      </div>
-                      "{activeScenario.spokenGuidance}"
-                    </div>
-                  </div>
-                )}
-
-                {/* Status Bar */}
-                <div className="border-t border-slate-800/80 pt-3 flex items-center justify-between text-slate-500 text-[11px]">
-                  <span>Active Target: {activeScenario.targetButtonLabel}</span>
-                  <span className="flex items-center gap-1 text-emerald-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Spatial Snapping Active
-                  </span>
-                </div>
+                {/* Dynamic SVG Annotation Overlay Layer (Active when Speaking) */}
+                {renderAnnotationOverlay()}
               </div>
 
               {/* Interactive Controls Bar */}
@@ -1081,7 +1554,7 @@ export const App: React.FC = () => {
             </div>
 
             <div className="pt-2 text-xs text-slate-500 font-mono">
-              Cursorbuddy_0.1.0_x64-setup.exe · 129 KB · Windows 10 & 11 (64-bit)
+              Cursorbuddy_0.1.0_x64-setup.exe · 141 KB · Windows 10 & 11 (64-bit)
             </div>
           </div>
         </section>
