@@ -14,7 +14,9 @@ Cargo.lock
 *.key
 *.cert
 
-# Desktop & Web build outputs
+# Installer staging & payloads
+apps/desktop/src-installer/staging/
+apps/desktop/src-installer/payload.zip
 dist/
 build/
 *.tsbuildinfo
